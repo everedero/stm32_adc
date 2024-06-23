@@ -2,6 +2,6 @@
 
 ```
 BOARD="nucleo_f756zg"
-west build -b $BOARD -p always app
+west build -b $BOARD -p always adc_dt
 
 ```
