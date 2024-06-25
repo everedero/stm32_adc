@@ -29,6 +29,11 @@ Then read the wanted channel:
 adc adc@40012000 read 0
 ```
 
+```
+devmem 40012000
+```
+
+
 Issue: displayed twice
 ```
 adc - ADC commands
@@ -43,39 +48,36 @@ Subcommands:
 
 Analog-to-digital converter (ADC)
 RM0385
-Page 458
+Reference Manual, page 458
+* ADC1 is address 0x40012000
+* ADC\_CR2 is at offset 0x08
+* ADC\_ON is the bit 1 in ADC\_CR2
 
-0x40012000 - 0x400123FF: ADC1 - ADC2 - ADC3
-
+In order to check that ADC1 is on:
 ```
 uart:~$ devmem 40012008
 0x401
-0b1 = ADON: ADC on
 ```
 
+GPIO configuration check:
+* Port A at address 0x40020000
+* Mode register (MODER) at offset 0
+* Each output mode is 2 bits: A0 is MODER[0:1], A1 is MODER[2:3]...
+* MODER 0b11 is "Analog Mode"
 
-Note: Once the DAC channelx is enabled, the corresponding GPIO pin (PA4 or PA5) is
-automatically connected to the analog converter output (DAC_OUTx). In order to avoid
-parasitic consumption, the PA4 or PA5 pin should first be configured to analog (AIN).
+```
+uart:~$ devmem 0x40020000
+Using data width 32
+Read value 0xa800ffc3
+```
 
 ADC_CR1 (offset 0x04)
 Bits 4:0 AWDCH[4:0]: Analog watchdog channel select bits
 (chann 0 to 31)
 
-Analog GPIOx
-0x40020000
-- Input: 0b00
-
-devmem 40020000 32
-
-Chan 2 and 3: analog mode (0b11)
-
-Channel 3 is pin A0. WHY?
-Because pins in STM32 Nucleo do not match logical pins.
-CN9 - A0 is logical PA3.
-
 ## Pinout
 ### ADC Nucleo pin name
+Disclaimer: Nucleo pin names are not logical pin names.
 
 | ADC name     | Logical pin | Nucleo pin name |
 |--------------|-------------|-----------------|
