@@ -11,6 +11,10 @@
 			<&adc1 6>, <&adc1 7>,
 			<&adc2 8>, <&adc2 9>;
 	};
+
+	chosen {
+		zephyr,console = &usart2;
+	};
 };
 
 &adc1 {

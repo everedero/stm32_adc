@@ -11,10 +11,33 @@ west build -b $BOARD -p always adc_dt
 Flash and run:
 ```
 west flash
-screen /dev/ttyACM0
 ```
 
+This sample separates shell and uart logging.
+In order to access logging, plug a 3V3 USB-UART adapter on pins 4 and 6 on PA9 (see diagram).
+
 ## ADC shell
+
+First, set the resolution:
+
+```
+adc adc@40012000 resolution 12
+```
+
+Then read the wanted channel:
+```
+adc adc@40012000 read 0
+```
+
+Issue: displayed twice
+```
+adc - ADC commands
+Subcommands:
+  adc@40012000  : Select subcommand for ADC property label.
+  adc@40012100  : Select subcommand for ADC property label.
+  adc@40012000  : Select subcommand for ADC property label.
+  adc@40012100  : Select subcommand for ADC property label.
+```
 
 3 ADC, 16 shared ext channels (datasheet)
 
@@ -115,9 +138,9 @@ CN9 - A0 is logical PA3.
                   +-------+                                            |   |   |
  (ADC123_IN3) A0  | 1 | 2 | D51                                   GND  | 5 | 6 | D5
                   |   |   |                                            |   |   |
-(ADC123_IN10) A1  | 3 | 4 | D52                        (ADC12_IN9) A6  | 7 | 8 | D4
+(ADC123_IN10) A1  | 3 | 4 | D52 (USART2_RX)            (ADC12_IN9) A6  | 7 | 8 | D4
                   |   |   |                                            |   |   |
-(ADC123_IN13) A2  | 5 | 6 | D53                      (ADC123_IN12) A7  | 9 | 10| D3
+(ADC123_IN13) A2  | 5 | 6 | D53 (USART2_TX)          (ADC123_IN12) A7  | 9 | 10| D3
                   |   |   |                                            |   |   |
    (ADC3_IN9) A3  | 7 | 8 | D54                        (ADC3_IN14) A8  | 11| 12| D2
                   |   |   |                                            |   |   |
