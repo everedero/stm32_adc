@@ -1,13 +1,20 @@
 # ADC sample
 
+## Build and run
+
+Build:
 ```
 BOARD="nucleo_f756zg"
 west build -b $BOARD -p always adc_dt
 ```
 
-* Enabling ADC shell
+Flash and run:
+```
+west flash
+screen /dev/ttyACM0
+```
 
-adc@40012000
+## ADC shell
 
 3 ADC, 16 shared ext channels (datasheet)
 
@@ -15,11 +22,13 @@ Analog-to-digital converter (ADC)
 RM0385
 Page 458
 
-0x4001 2000 - 0x4001 23FF ADC1 - ADC2 - ADC3
+0x40012000 - 0x400123FF: ADC1 - ADC2 - ADC3
 
+```
 uart:~$ devmem 40012008
 0x401
 0b1 = ADON: ADC on
+```
 
 
 Note: Once the DAC channelx is enabled, the corresponding GPIO pin (PA4 or PA5) is
