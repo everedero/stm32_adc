@@ -14,6 +14,9 @@
 #include <zephyr/kernel.h>
 #include <zephyr/sys/printk.h>
 #include <zephyr/sys/util.h>
+#include <zephyr/logging/log.h>
+
+LOG_MODULE_REGISTER(main, CONFIG_LOG_DEFAULT_LEVEL);
 
 #if !DT_NODE_EXISTS(DT_PATH(zephyr_user)) || \
 	!DT_NODE_HAS_PROP(DT_PATH(zephyr_user), io_channels)
@@ -33,9 +36,9 @@ int main(void)
 {
 	int err;
 	uint32_t count = 0;
-	uint16_t buf;
+	uint16_t buf[16];
 	struct adc_sequence sequence = {
-		.buffer = &buf,
+		.buffer = buf,
 		/* buffer size in bytes, not number of samples */
 		.buffer_size = sizeof(buf),
 	};
@@ -81,10 +84,11 @@ int main(void)
 			 * complement value.
 			 */
 			if (adc_channels[i].channel_cfg.differential) {
-				val_mv = (int32_t)((int16_t)buf);
+				val_mv = (int32_t)((int16_t)buf[0]);
 			} else {
-				val_mv = (int32_t)buf;
+				val_mv = (int32_t)buf[0];
 			}
+			LOG_HEXDUMP_INF(buf, 32, "Buffer:");
 			printk("%"PRId32, val_mv);
 			err = adc_raw_to_millivolts_dt(&adc_channels[i],
 						       &val_mv);

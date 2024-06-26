@@ -8,13 +8,17 @@
 		/* adjust channel number according to pinmux in board.dts */
 		io-channels = <&adc1 0>, <&adc1 3>,
 			<&adc1 4>, <&adc1 5>,
-			<&adc1 6>, <&adc1 7>,
-			<&adc2 8>, <&adc2 9>;
+			<&adc1 6>, <&adc1 7>;
+	//		<&adc2 8>, <&adc2 9>;
 	};
 
 	chosen {
 		zephyr,console = &usart2;
 	};
+};
+
+&dma2 {
+	status = "okay";
 };
 
 &adc1 {
@@ -27,6 +31,10 @@
 	pinctrl-names = "default";
 	st,adc-clock-source = <SYNC>;
 	st,adc-prescaler = <2>;
+
+	dmas = <&dma2 0 0 (STM32_DMA_PERIPH_RX | STM32_DMA_MEM_16BITS |
+		STM32_DMA_PERIPH_16BITS) STM32_DMA_FIFO_FULL>;
+	dma-names = "dma";
 	channel@0 {
 		reg = <0>;
 		zephyr,gain = "ADC_GAIN_1";
@@ -70,7 +78,7 @@
 		zephyr,resolution = <12>;
 	};
 };
-
+/*
 &adc2 {
 	#address-cells = <1>;
 	#size-cells = <0>;
@@ -94,4 +102,4 @@
 		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
 		zephyr,resolution = <12>;
 	};
-};
+};*/
