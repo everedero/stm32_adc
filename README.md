@@ -75,6 +75,18 @@ ADC_CR1 (offset 0x04)
 Bits 4:0 AWDCH[4:0]: Analog watchdog channel select bits
 (chann 0 to 31)
 
+DMA configuration:
+* st,stm32-dma-v1
+* DMA2: 0x40026400, stream 0 config register: offset 0x10
+
+    devmem 40026410 32
+    0x2c10
+
+    '0b0010 1100 0001 0000'
+
+* Channel 0 selected
+* msize = 1, psize = 1 (16 bits data), minc=1 (incremental memory address), tcie=1 (transfer complete interrupt enabled)
+
 ## Pinout
 ### ADC Nucleo pin name
 Disclaimer: Nucleo pin names are not logical pin names.

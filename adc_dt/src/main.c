@@ -88,7 +88,7 @@ int main(void)
 			} else {
 				val_mv = (int32_t)buf[0];
 			}
-			LOG_HEXDUMP_INF(buf, 32, "Buffer:");
+			LOG_HEXDUMP_INF(buf, 16, "Buffer:");
 			printk("%"PRId32, val_mv);
 			err = adc_raw_to_millivolts_dt(&adc_channels[i],
 						       &val_mv);
