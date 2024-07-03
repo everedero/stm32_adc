@@ -32,15 +32,35 @@ static const struct adc_dt_spec adc_channels[] = {
 			     DT_SPEC_AND_COMMA)
 };
 
+adc_sequence_callback adc_callback(const struct device *dev,
+		const struct adc_sequence *sequence,
+		uint16_t sampling_index)
+{
+	if (sampling_index == 31) {
+		LOG_INF("Sampling %d", sampling_index);
+		LOG_HEXDUMP_INF(sequence->buffer, 32, "Buffer:");
+	}
+	return(ADC_ACTION_CONTINUE);
+
+}
+
 int main(void)
 {
 	int err;
 	uint32_t count = 0;
-	uint16_t buf[16];
+	uint16_t buf[32];
+	const struct adc_sequence_options adc_options = {
+		.interval_us = 1000,
+		.callback = &adc_callback,
+		/* How many to read -1 */
+		.extra_samplings = 31,
+	};
 	struct adc_sequence sequence = {
 		.buffer = buf,
 		/* buffer size in bytes, not number of samples */
 		.buffer_size = sizeof(buf),
+		.options = &adc_options,
+		.channels = 0b11111001, /* 0xf9, adc channels bitmask */
 	};
 
 	/* Configure channels individually prior to sampling. */
@@ -56,51 +76,23 @@ int main(void)
 			return 0;
 		}
 	}
-
-#ifndef CONFIG_COVERAGE
-	while (1) {
-#else
-	for (int k = 0; k < 10; k++) {
-#endif
+	/* Read each channel once, with 32 samples in each */
 		printk("ADC reading[%u]:\n", count++);
 		for (size_t i = 0U; i < ARRAY_SIZE(adc_channels); i++) {
 			int32_t val_mv;
 
-			printk("- %s, channel %d: ",
+			printk("- %s, channel %d: \n",
 			       adc_channels[i].dev->name,
 			       adc_channels[i].channel_id);
 
 			(void)adc_sequence_init_dt(&adc_channels[i], &sequence);
 
 			err = adc_read_dt(&adc_channels[i], &sequence);
+			k_sleep(K_MSEC(1000));
 			if (err < 0) {
 				printk("Could not read (%d)\n", err);
 				continue;
 			}
-
-			/*
-			 * If using differential mode, the 16 bit value
-			 * in the ADC sample buffer should be a signed 2's
-			 * complement value.
-			 */
-			if (adc_channels[i].channel_cfg.differential) {
-				val_mv = (int32_t)((int16_t)buf[0]);
-			} else {
-				val_mv = (int32_t)buf[0];
-			}
-			LOG_HEXDUMP_INF(buf, 16, "Buffer:");
-			printk("%"PRId32, val_mv);
-			err = adc_raw_to_millivolts_dt(&adc_channels[i],
-						       &val_mv);
-			/* conversion to mV may not be supported, skip if not */
-			if (err < 0) {
-				printk(" (value in mV not available)\n");
-			} else {
-				printk(" = %"PRId32" mV\n", val_mv);
-			}
-		}
-
-		k_sleep(K_MSEC(1000));
-	}
+}
 	return 0;
 }
