@@ -93,16 +93,16 @@ int main(void)
 		sequence.channels = 0xf9;
 		/* Perform 10 batch readings of 32 samples on all channels*/
 		for (size_t i = 0U; i < 10; i++) {
-			err = adc_read_dt(&adc_channels[i], &sequence);
+			err = adc_read_dt(&adc_channels[0], &sequence);
 			if (err < 0) {
 				printk("Could not read (%d)\n", err);
 				continue;
 			}
-			for (i = 0; i < 32; i++) {
+			//for (i = 0; i < 16; i++) {
 				/* Print 32 values from 2nd ADC channel */
-				printk("%d ", ((int16_t*)sequence.buffer)[1 + i * 6]);
-			}
-			k_sleep(K_MSEC(1000));
+				//printk("%d ", ((int16_t*)sequence.buffer)[1 + (i * 6)]);
+			//}
+			k_sleep(K_MSEC(100));
 		}
 	return 0;
 }
