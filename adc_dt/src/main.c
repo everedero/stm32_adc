@@ -77,32 +77,32 @@ int main(void)
 			return 0;
 		}
 	}
-		/* Initializes all channels */
-		for (size_t i = 0U; i < ARRAY_SIZE(adc_channels); i++) {
-			//int32_t val_mv;
-
-			printk("- %s, channel %d: \n",
-			       adc_channels[i].dev->name,
-			       adc_channels[i].channel_id);
-			//LOG_INF("1- 0x%x", sequence.channels);
-			(void)adc_sequence_init_dt(&adc_channels[i], &sequence);
-			//LOG_INF("2- 0x%x", sequence.channels);
-		}
-		/* Fix: reset sequence.channels to the value we wanted */
-
+		/* Initializes sequence from channel 0 parameters */
+		/* All elements hould have same resolution and oversampling parameters */
+		(void)adc_sequence_init_dt(&adc_channels[0], &sequence);
+		/* Re-set multiple channel config, rewritten by sequence_init */
 		sequence.channels = 0xf9;
-		/* Perform 10 batch readings of 32 samples on all channels*/
-		for (size_t i = 0U; i < 10; i++) {
+
+		/* Perform 3 batch readings of 32 samples on all channels*/
+		for (size_t i = 0U; i < 3; i++) {
 			err = adc_read_dt(&adc_channels[0], &sequence);
 			if (err < 0) {
 				printk("Could not read (%d)\n", err);
 				continue;
 			}
-			//for (i = 0; i < 16; i++) {
-				/* Print 32 values from 2nd ADC channel */
-				//printk("%d ", ((int16_t*)sequence.buffer)[1 + (i * 6)]);
-			//}
 			k_sleep(K_MSEC(100));
 		}
+
+	/* Print results from the last batch */
+	int16_t val;
+	int u, j;
+	for (u = 0; u < 6; u++) {
+		LOG_INF("ADC %d:", u);
+		for (j = 0; j < 32; j++) {
+			val = ((int16_t *)sequence.buffer)[u + (j*6)];
+			LOG_INF("%d ", val);
+			k_sleep(K_MSEC(10));
+		}
+	}
 	return 0;
 }
