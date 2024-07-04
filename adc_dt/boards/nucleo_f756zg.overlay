@@ -9,13 +9,12 @@
 		io-channels = <&adc1 0>, <&adc1 3>,
 			<&adc1 4>, <&adc1 5>,
 			<&adc1 6>, <&adc1 7>;
-	//		<&adc2 8>, <&adc2 9>;
 	};
+};
 
 	chosen {
 		zephyr,console = &usart2;
-	};
-};
+	}
 
 &dma2 {
 	status = "okay";
@@ -78,28 +77,3 @@
 		zephyr,resolution = <12>;
 	};
 };
-/*
-&adc2 {
-	#address-cells = <1>;
-	#size-cells = <0>;
-	status = "okay";
-	pinctrl-0 = <&adc2_in8_pb0>, <&adc2_in9_pb1>;
-	pinctrl-names = "default";
-	st,adc-clock-source = <SYNC>;
-	st,adc-prescaler = <2>;
-
-	channel@8 {
-		reg = <8>;
-		zephyr,gain = "ADC_GAIN_1";
-		zephyr,reference = "ADC_REF_INTERNAL";
-		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
-		zephyr,resolution = <12>;
-	};
-	channel@9 {
-		reg = <9>;
-		zephyr,gain = "ADC_GAIN_1";
-		zephyr,reference = "ADC_REF_INTERNAL";
-		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
-		zephyr,resolution = <12>;
-	};
-};*/

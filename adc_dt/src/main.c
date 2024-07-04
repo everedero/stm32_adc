@@ -56,11 +56,15 @@ int main(void)
 		/* How many to read -1 */
 		.extra_samplings = 31,
 	};
+	/* Manually set sequence */
+	/* Not using adc_sequence_init func */
 	struct adc_sequence sequence = {
 		.buffer = buf,
 		/* buffer size in bytes, not number of samples */
 		.buffer_size = sizeof(buf),
 		.options = &adc_options,
+		.resolution = 12,
+		.oversampling = 0,
 		.channels = 0xf9, /* 0b111110011, adc channels bitmask */
 	};
 
@@ -77,11 +81,6 @@ int main(void)
 			return 0;
 		}
 	}
-		/* Initializes sequence from channel 0 parameters */
-		/* All elements hould have same resolution and oversampling parameters */
-		(void)adc_sequence_init_dt(&adc_channels[0], &sequence);
-		/* Re-set multiple channel config, rewritten by sequence_init */
-		sequence.channels = 0xf9;
 
 		/* Perform 3 batch readings of 32 samples on all channels*/
 		for (size_t i = 0U; i < 3; i++) {
