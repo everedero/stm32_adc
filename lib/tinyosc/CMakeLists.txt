@@ -3,3 +3,4 @@
 
 zephyr_library()
 zephyr_library_sources(tinyosc.c)
+zephyr_library_sources(create_osc_pack.c)
