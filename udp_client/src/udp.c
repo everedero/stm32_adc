@@ -21,9 +21,15 @@ LOG_MODULE_DECLARE(net_echo_client_sample, LOG_LEVEL_DBG);
 #include "common.h"
 #include "ca_certificate.h"
 
+#include <app/lib/create_osc_pack.h>
+
 #define RECV_BUF_SIZE 1280
 #define UDP_SLEEP K_MSEC(150)
 #define UDP_WAIT K_SECONDS(10)
+
+static char tx_buffer[2048]; // declare a 2Kb buffer to read packet data into
+static const int tx_buf_len = sizeof(tx_buffer) - 1;
+static int tx_len = 0;
 
 static APP_BMEM char recv_buf[RECV_BUF_SIZE];
 
@@ -140,12 +146,10 @@ static int send_udp_data(struct data *data)
 {
 	int ret;
 
-	do {
-		data->udp.expecting = sys_rand32_get() % ipsum_len;
-	} while (data->udp.expecting == 0U ||
-		 data->udp.expecting > data->udp.mtu);
+	tx_len = create_msg(tx_buffer, tx_buf_len);
+	data->udp.expecting = tx_len;
 
-	ret = send(data->udp.sock, lorem_ipsum, data->udp.expecting, 0);
+	ret = send(data->udp.sock, tx_buffer, data->udp.expecting, 0);
 
 	if (PRINT_PROGRESS) {
 		LOG_DBG("%s UDP: Sent %d bytes", data->proto, data->udp.expecting);
