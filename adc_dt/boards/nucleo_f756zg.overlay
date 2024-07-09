@@ -10,11 +10,11 @@
 			<&adc1 4>, <&adc1 5>,
 			<&adc1 6>, <&adc1 7>;
 	};
-};
 
 	chosen {
 		zephyr,console = &usart2;
-	}
+	};
+};
 
 &dma2 {
 	status = "okay";
