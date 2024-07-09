@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2024 Eve Redero
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 #include "tinyosc.h"
 #include <zephyr/kernel.h>
 
