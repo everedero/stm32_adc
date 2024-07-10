@@ -39,7 +39,7 @@ adc_sequence_callback adc_callback(const struct device *dev,
 	if (sampling_index == 31) {
 		/* Total number of samples reached (for all channels) */
 		LOG_INF("Sampling %d", sampling_index);
-		LOG_HEXDUMP_DBG(sequence->buffer, 32 * 6, "Buffer:");
+		LOG_HEXDUMP_INF(sequence->buffer, 32 * 6, "Buffer:");
 	}
 	return(ADC_ACTION_CONTINUE);
 
@@ -93,15 +93,16 @@ int main(void)
 		}
 
 	/* Print results from the last batch */
-	int16_t val;
+	int32_t val;
 	int u, j;
 	for (u = 0; u < 6; u++) {
 		LOG_INF("ADC %d:", u);
+		val = 0;
 		for (j = 0; j < 32; j++) {
-			val = ((int16_t *)sequence.buffer)[u + (j*6)];
-			LOG_INF("%d ", val);
-			k_sleep(K_MSEC(10));
+			val += ((int16_t *)sequence.buffer)[u + (j*6)];
 		}
+		val = val / 32;
+		LOG_INF("%d ", val);
 	}
 	return 0;
 }
