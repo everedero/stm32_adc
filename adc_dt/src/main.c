@@ -51,8 +51,8 @@ int main(void)
 	uint32_t count = 0;
 	uint16_t buf[32 * 6];
 	const struct adc_sequence_options adc_options = {
-		.interval_us = 100000,
-		.callback = &adc_callback,
+		.interval_us = 20, /* Sampling time max 16us */
+		//.callback = &adc_callback,
 		/* How many to read -1 */
 		.extra_samplings = 31,
 	};
