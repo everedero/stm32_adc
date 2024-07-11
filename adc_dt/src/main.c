@@ -54,7 +54,7 @@ int main(void)
 	uint32_t count = 0;
 	uint16_t buf[N_CHANNELS * N_SAMPLES];
 	const struct adc_sequence_options adc_options = {
-		.interval_us = 20, /* Sampling time max 16us */
+		.interval_us = 0, /* Sampling as fast as possible */
 		//.callback = &adc_callback,
 		/* How many to read -1 */
 		.extra_samplings = N_SAMPLES-1,

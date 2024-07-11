@@ -33,6 +33,14 @@ adc adc@40012000 read 0
 devmem 40012000
 ```
 
+* Minimum (0 us): 35us sampling freq
+29us spent in ISR
+
+* > 1us: 98us sampling freq
+11us spent in ISR
+
+* 120us: 191us sampling freq
+11us spent in ISR
 
 Issue: displayed twice
 ```
