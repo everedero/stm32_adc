@@ -26,7 +26,7 @@ LOG_MODULE_REGISTER(main, CONFIG_LOG_DEFAULT_LEVEL);
 #define DT_SPEC_AND_COMMA(node_id, prop, idx) \
 	ADC_DT_SPEC_GET_BY_IDX(node_id, idx),
 
-#define N_CHANNELS 6
+#define N_CHANNELS 2
 #define N_SAMPLES 32
 
 /* Data of ADC io-channels specified in devicetree. */
@@ -68,7 +68,7 @@ int main(void)
 		.options = &adc_options,
 		.resolution = 12,
 		.oversampling = 0,
-		.channels = 0xf9, /* 0b111110011, adc channels bitmask */
+		.channels = 0x9, /* 0b1001 bitmask */
 	};
 
 	/* Configure channels individually prior to sampling. */
