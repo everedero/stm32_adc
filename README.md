@@ -75,6 +75,9 @@ ADC_CR1 (offset 0x04)
 Bits 4:0 AWDCH[4:0]: Analog watchdog channel select bits
 (chann 0 to 31)
 
+DMA for ADC1 IN3:
+DMA2 Stream 0
+
 DMA configuration:
 * st,stm32-dma-v1
 * DMA2: 0x40026400, stream 0 config register: offset 0x10
