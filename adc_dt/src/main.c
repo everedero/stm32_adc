@@ -26,6 +26,9 @@ LOG_MODULE_REGISTER(main, CONFIG_LOG_DEFAULT_LEVEL);
 #define DT_SPEC_AND_COMMA(node_id, prop, idx) \
 	ADC_DT_SPEC_GET_BY_IDX(node_id, idx),
 
+#define N_CHANNELS 6
+#define N_SAMPLES 32
+
 /* Data of ADC io-channels specified in devicetree. */
 static const struct adc_dt_spec adc_channels[] = {
 	DT_FOREACH_PROP_ELEM(DT_PATH(zephyr_user), io_channels,
@@ -36,10 +39,10 @@ adc_sequence_callback adc_callback(const struct device *dev,
 		const struct adc_sequence *sequence,
 		uint16_t sampling_index)
 {
-	if (sampling_index == 31) {
+	if (sampling_index == N_SAMPLES-1) {
 		/* Total number of samples reached (for all channels) */
 		LOG_INF("Sampling %d", sampling_index);
-		LOG_HEXDUMP_INF(sequence->buffer, 32 * 6, "Buffer:");
+		LOG_HEXDUMP_INF(sequence->buffer, N_SAMPLES * N_CHANNELS, "Buffer:");
 	}
 	return(ADC_ACTION_CONTINUE);
 
@@ -49,12 +52,12 @@ int main(void)
 {
 	int err;
 	uint32_t count = 0;
-	uint16_t buf[32 * 6];
+	uint16_t buf[N_CHANNELS * N_SAMPLES];
 	const struct adc_sequence_options adc_options = {
 		.interval_us = 20, /* Sampling time max 16us */
 		//.callback = &adc_callback,
 		/* How many to read -1 */
-		.extra_samplings = 31,
+		.extra_samplings = N_SAMPLES-1,
 	};
 	/* Manually set sequence */
 	/* Not using adc_sequence_init func */
@@ -95,13 +98,13 @@ int main(void)
 	/* Print results from the last batch */
 	int32_t val;
 	int u, j;
-	for (u = 0; u < 6; u++) {
+	for (u = 0; u < N_CHANNELS; u++) {
 		LOG_INF("ADC %d:", u);
 		val = 0;
-		for (j = 0; j < 32; j++) {
-			val += ((int16_t *)sequence.buffer)[u + (j*6)];
+		for (j = 0; j < N_SAMPLES; j++) {
+			val += ((int16_t *)sequence.buffer)[u + (j*N_CHANNELS)];
 		}
-		val = val / 32;
+		val = val / N_SAMPLES;
 		LOG_INF("%d ", val);
 	}
 	return 0;
